@@ -10,4 +10,4 @@ mix
     .postCss('resources/css/tool.css', 'css', [
         tailwindcss('tailwind.config.js'),
     ])
-    .nova('php-junior/nova-logs')
+    .nova('mlsolutions/nova-logs')

@@ -95,7 +95,7 @@ export default {
             return color(level)
         },
         async getListLogs(url) {
-            url = url || '/nova-vendor/php-junior/nova-log-viewer/get_list_logs';
+            url = url || '/nova-vendor/mlsolutions/nova-log-viewer/get_list_logs';
             const {data} = await Nova.request().get(url);
             this.headers = data.headers;
             this.rows = data.rows;
@@ -116,7 +116,7 @@ export default {
         },
 
         async confirmDelete() {
-            await Nova.request().delete('/nova-vendor/php-junior/nova-log-viewer/delete', {
+            await Nova.request().delete('/nova-vendor/mlsolutions/nova-log-viewer/delete', {
                 data: {
                     date: this.deleting.date,
                 }

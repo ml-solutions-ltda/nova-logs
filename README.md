@@ -1,7 +1,7 @@
 # Nova Log Viewer
 
-[![Latest Stable Version](https://poser.pugx.org/php-junior/nova-logs/v/stable)](https://packagist.org/packages/php-junior/nova-logs)
-[![Total Downloads](https://poser.pugx.org/php-junior/nova-logs/downloads)](https://packagist.org/packages/php-junior/nova-logs)
+[![Latest Stable Version](https://poser.pugx.org/mlsolutions/nova-logs/v/stable)](https://packagist.org/packages/mlsolutions/nova-logs)
+[![Total Downloads](https://poser.pugx.org/mlsolutions/nova-logs/downloads)](https://packagist.org/packages/mlsolutions/nova-logs)
 
 ![screenshot 1](1.png)
 
@@ -21,7 +21,7 @@ For Laravel Nova Version 3, please use v1 instead.
 You can install the package in to a Laravel app that uses [Nova](https://nova.laravel.com) via composer:
 
 ```bash
-composer require php-junior/nova-logs
+composer require mlsolutions/nova-logs
 ```
 
 **LogViewer** support only the **daily** log channel, so make sure that the `LOG_CHANNEL` is set to `daily` instead of `stack` in your `.env` file.
@@ -41,7 +41,7 @@ public function tools()
 {
     return [
         // ...
-        new \PhpJunior\NovaLogViewer\Tool(),
+        new \MlSolutions\NovaLogViewer\Tool(),
     ];
 }
 ```

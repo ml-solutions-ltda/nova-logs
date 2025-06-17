@@ -45,7 +45,7 @@ export default {
     },
     computed: {
         downloadUrl() {
-            return '/nova-vendor/php-junior/nova-log-viewer/download/'
+            return '/nova-vendor/mlsolutions/nova-log-viewer/download/'
         },
         rowClasses: () => 'td-fit border-t border-gray-100 dark:border-gray-700 px-2 py-2 pl-5 pr-5 dark:bg-gray-800 group-hover:bg-gray-50 dark:group-hover:bg-gray-900 text-center',
     },

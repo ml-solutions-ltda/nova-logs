@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpJunior\NovaLogViewer\Http\Controllers;
+namespace MlSolutions\NovaLogViewer\Http\Controllers;
 
 use Arcanedev\LogViewer\Contracts\LogViewer as LogViewerContract;
 use Arcanedev\LogViewer\Entities\Log;

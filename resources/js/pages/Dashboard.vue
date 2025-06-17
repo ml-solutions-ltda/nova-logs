@@ -58,7 +58,7 @@ export default {
         dark((isDark) => this.isDark = isDark);
 
         try {
-            const {data} = await Nova.request().get('/nova-vendor/php-junior/nova-log-viewer/get_chart_data');
+            const {data} = await Nova.request().get('/nova-vendor/mlsolutions/nova-log-viewer/get_chart_data');
             this.dataCollection = data.chartData;
             this.percents = data.percents;
             console.log(data);

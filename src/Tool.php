@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpJunior\NovaLogViewer;
+namespace MlSolutions\NovaLogViewer;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Menu\MenuGroup;

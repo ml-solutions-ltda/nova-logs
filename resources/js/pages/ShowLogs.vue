@@ -194,7 +194,7 @@ export default {
     },
     computed: {
         downloadUrl() {
-            return '/nova-vendor/php-junior/nova-log-viewer/download/';
+            return '/nova-vendor/mlsolutions/nova-log-viewer/download/';
         },
     },
     mounted() {
@@ -216,12 +216,12 @@ export default {
             this.getLogByLevel(level);
         },
         getLogByLevel(level) {
-            this.getLog(`/nova-vendor/php-junior/nova-log-viewer/get/${ this.date }/${ level }`);
+            this.getLog(`/nova-vendor/mlsolutions/nova-log-viewer/get/${ this.date }/${ level }`);
         },
         async getLog(url) {
             url =
                 url ||
-                `/nova-vendor/php-junior/nova-log-viewer/get/${ this.date }/all`;
+                `/nova-vendor/mlsolutions/nova-log-viewer/get/${ this.date }/all`;
             const {data} = await Nova.request().get(url);
             this.log = data.log;
             this.levels = data.levels;
@@ -253,7 +253,7 @@ export default {
         },
 
         async confirmDelete() {
-            await Nova.request().delete('/nova-vendor/php-junior/nova-log-viewer/delete', {
+            await Nova.request().delete('/nova-vendor/mlsolutions/nova-log-viewer/delete', {
                 data: {
                     date: this.deleting.date,
                 }

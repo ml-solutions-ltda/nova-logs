@@ -1,5 +1,5 @@
 {
-    "name": "php-junior/nova-logs",
+    "name": "mlsolutions/nova-logs",
     "description": "Provides a Log Viewer for Laravel Nova",
     "keywords": [
         "laravel",
@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
-        "laravel/nova": "^4.0",
+        "laravel/nova": "^4.0|^5.0",
         "arcanedev/log-viewer": "*"
     },
     "require-dev": {
@@ -23,18 +23,18 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpJunior\\NovaLogViewer\\": "src/"
+            "MlSolutions\\NovaLogViewer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpJunior\\NovaLogViewer\\Tests\\": "tests"
+            "MlSolutions\\NovaLogViewer\\Tests\\": "tests"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "PhpJunior\\NovaLogViewer\\ToolServiceProvider"
+                "MlSolutions\\NovaLogViewer\\ToolServiceProvider"
             ]
         }
     },

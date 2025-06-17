@@ -1,13 +1,13 @@
 <?php
 
-namespace PhpJunior\NovaLogViewer;
+namespace MlSolutions\NovaLogViewer;
 
 use Laravel\Nova\Http\Middleware\Authenticate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use PhpJunior\NovaLogViewer\Http\Middleware\Authorize;
+use MlSolutions\NovaLogViewer\Http\Middleware\Authorize;
 
 class ToolServiceProvider extends ServiceProvider
 {
@@ -46,7 +46,7 @@ class ToolServiceProvider extends ServiceProvider
             ->group(__DIR__ . '/../routes/inertia.php');
 
         Route::middleware(['nova', Authorize::class])
-            ->prefix('nova-vendor/php-junior/nova-log-viewer')
+            ->prefix('nova-vendor/mlsolutions/nova-log-viewer')
             ->group(__DIR__ . '/../routes/api.php');
     }
 
