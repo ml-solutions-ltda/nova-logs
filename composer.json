@@ -15,7 +15,7 @@
     "require": {
         "php": "^8.0|^8.3",
         "laravel/nova": "^4.0|^5.0",
-        "arcanedev/log-viewer": "develop as 11.1"
+        "arcanedev/log-viewer": "dev-develop as 11.1"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0",
