@@ -8,7 +8,8 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "nova:install": "npm --prefix='../../vendor/laravel/nova' ci"
+        "nova:install": "npm --prefix='../../vendor/laravel/nova' ci",
+        "test": "node --test tests/frontend.test.mjs"
     },
     "devDependencies": {
         "@vue/compiler-sfc": "^3.2.22",
@@ -18,7 +19,8 @@
         "postcss": "^8.3.11",
         "tailwindcss": "^3.0.24",
         "vue-chartjs": "^4.1.2",
-        "vue-loader": "^16.8.3"
+        "vue-loader": "^16.8.3",
+        "webpack": "5.98.0"
     },
     "dependencies": {}
 }
