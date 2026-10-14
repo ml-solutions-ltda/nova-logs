@@ -1,1 +1,1 @@
-<?xml version="1.0"?><phpunit colors="true"><testsuites><testsuite name="Bounded reader"><directory>tests</directory></testsuite></testsuites></phpunit>
+<?xml version="1.0"?><phpunit colors="true"><testsuites><testsuite name="Bounded reader"><file>tests/BoundedLogReaderTest.php</file></testsuite></testsuites></phpunit>
