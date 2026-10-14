@@ -2,12 +2,14 @@
 
 namespace MlSolutions\NovaLogViewer;
 
-use Laravel\Nova\Http\Middleware\Authenticate;
-use Laravel\Nova\Nova;
-use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Nova\Events\ServingNova;
+use Laravel\Nova\Http\Middleware\Authenticate;
+use Laravel\Nova\Nova;
 use MlSolutions\NovaLogViewer\Http\Middleware\Authorize;
+use MlSolutions\NovaLogViewer\Support\BoundedLogReader;
+use MlSolutions\NovaLogViewer\Support\LaravelHeader;
 
 class ToolServiceProvider extends ServiceProvider
 {
@@ -43,11 +45,11 @@ class ToolServiceProvider extends ServiceProvider
         }
 
         Nova::router(['nova', Authenticate::class, Authorize::class], 'nova-logs')
-            ->group(__DIR__ . '/../routes/inertia.php');
+            ->group(__DIR__.'/../routes/inertia.php');
 
         Route::middleware(['nova', Authorize::class])
             ->prefix('nova-vendor/mlsolutions/nova-log-viewer')
-            ->group(__DIR__ . '/../routes/api.php');
+            ->group(__DIR__.'/../routes/api.php');
     }
 
     /**
@@ -57,7 +59,14 @@ class ToolServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/nova-logs.php', 'nova-logs');
+        $this->mergeConfigFrom(__DIR__.'/../config/nova-logs.php', 'nova-logs');
+        $this->app->bind(BoundedLogReader::class, function () {
+            $options = config('nova-logs.reader', []);
+            $options += ['roots' => [storage_path('logs')], 'node' => 'local'];
+            $options['scope'] = fn () => (string) request()->user()?->getAuthIdentifier();
+
+            return new BoundedLogReader($options, [new LaravelHeader, 'header']);
+        });
 
         if (config('nova-logs.log-viewer.force_disable_routing', true)) {
             config()->set('log-viewer.route.enabled', false);
@@ -73,7 +82,7 @@ class ToolServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/nova-logs.php' => config_path('nova-logs.php'),
+                __DIR__.'/../config/nova-logs.php' => config_path('nova-logs.php'),
             ], 'nova-logs-config');
         }
     }

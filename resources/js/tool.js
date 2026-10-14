@@ -1,9 +1,2 @@
-import Dashboard from './pages/Dashboard';
-import LogsTool from './pages/LogsTool';
-import ShowLogs from './pages/ShowLogs';
-
-Nova.booting((app, store) => {
-    Nova.inertia('NovaLogs', Dashboard);
-    Nova.inertia('LogsTool', LogsTool);
-    Nova.inertia('ShowLogs', ShowLogs);
-})
+import FileExplorer from './pages/FileExplorer.vue';
+Nova.booting(app => { for (const page of ['NovaLogs','LogsTool','ShowLogs']) Nova.inertia(page, FileExplorer); });
