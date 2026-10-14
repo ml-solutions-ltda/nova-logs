@@ -310,7 +310,8 @@ class BoundedLogReader
         $handle = $this->open($data['file']);
         try {
             fseek($handle, $data['start']);
-            $header = fgets($handle, 8193) ?: '';
+            $size = $data['end'] - $data['start'];
+            $header = $size > 0 ? (fgets($handle, min(8192, $size) + 1) ?: '') : '';
             $meta = ($this->parser)($header) ?? ['message' => '[Formato não reconhecido]', 'level' => 'UNKNOWN', 'category' => 'unknown', 'occurred_at' => null];
             $size = $data['end'] - $data['start'];
             $limit = max(1, min(262144, $limit));

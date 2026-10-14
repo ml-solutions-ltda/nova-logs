@@ -99,4 +99,12 @@ class BoundedLogReaderTest extends TestCase
         $this->reader->page($file,[],$page['data'][0]['locator']);
     }
 
+    public function testDetailHeaderExcludesAppendBeyondCapturedEntryEnd(): void
+    {
+        $path=$this->root.'/laravel-a.log';$original='[2026-10-14 12:00:00] production.ERROR: Before';file_put_contents($path,$original);
+        $page=$this->reader->page($this->reader->snapshot());$entry=$page['data'][0];file_put_contents($path," After\n",FILE_APPEND);
+        $part=$this->reader->part($entry['reference'],$entry['locator']);
+        $this->assertSame('Before',$part['entry']->message);$this->assertSame($original,$part['text']);$this->assertFalse($part['complete']);
+    }
+
 }

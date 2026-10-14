@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+- Keep detail-header parsing within the captured entry boundary when an incomplete header receives an append.
+
 ## 2.0.1
 
 - Accept the bounded 64 KiB token envelope for integrations with extended header metadata; keep UTF-8 tokens compact.
