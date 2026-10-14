@@ -103,7 +103,7 @@ class BoundedLogReader
 
     public function encode(array $value): string
     {
-        return Crypt::encryptString(json_encode(['v' => 1, 'scope' => $this->scope(), 'expires' => time() + 1800, 'value' => $value], JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR));
+        return Crypt::encryptString(json_encode(['v' => 1, 'scope' => $this->scope(), 'expires' => time() + 1800, 'value' => $value], JSON_INVALID_UTF8_SUBSTITUTE | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
     }
 
     public function decode(string $token): array

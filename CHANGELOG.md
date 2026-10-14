@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+- Accept the bounded 64 KiB token envelope for integrations with extended header metadata; keep UTF-8 tokens compact.
+
 ## 2.0.0
 
 - Replace whole-acervo Arcanedev parsing with a shared bounded direct file reader and cursor-based explorer.
