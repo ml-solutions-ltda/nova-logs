@@ -92,4 +92,11 @@ class BoundedLogReaderTest extends TestCase
         try {$this->reader->allowed($path);$this->fail('Unreadable file allowed');}catch(RuntimeException){$this->assertTrue(true);}finally{chmod($path,0600);}
     }
 
+    public function testAValidLocatorCannotBeReusedAsPageCursor(): void
+    {
+        file_put_contents($this->root.'/laravel-a.log',"[2026-10-14 12:00:00] production.ERROR: First\n");
+        $file=$this->reader->snapshot();$page=$this->reader->page($file);$this->expectException(RuntimeException::class);
+        $this->reader->page($file,[],$page['data'][0]['locator']);
+    }
+
 }

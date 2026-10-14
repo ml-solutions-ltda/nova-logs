@@ -21,6 +21,7 @@ class NativeLogController extends Controller
         $filters = array_intersect_key($data, array_flip(['level', 'search']));
         try {
             $file = ! empty($data['snapshot']) ? $this->reader->decode($data['snapshot']) : $this->reader->snapshot($data['file_id'] ?? null);
+            if ($file && !isset($file['id'], $file['size'], $file['dev'], $file['ino'], $file['head'], $file['tail'])) { throw new \RuntimeException('Snapshot inválido. Atualize a consulta.'); }
             if (! empty($data['file_id']) && ($file['id'] ?? null) !== $data['file_id']) {
                 abort(422, 'Atualize o arquivo selecionado.');
             }

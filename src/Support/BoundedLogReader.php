@@ -191,7 +191,7 @@ class BoundedLogReader
         $state = ['offset' => 0, 'active' => null, 'line_start' => true, 'overlap' => ''];
         if ($cursor) {
             $decoded = $this->decode($cursor);
-            if ($decoded['file'] !== $file || $decoded['filters'] !== $filters) {
+            if (($decoded['file'] ?? null) !== $file || ($decoded['filters'] ?? null) !== $filters || !isset($decoded['state']['offset'], $decoded['state']['line_start'], $decoded['state']['overlap']) || !array_key_exists('active', $decoded['state'])) {
                 throw new RuntimeException('Cursor pertence a outro arquivo ou filtro.');
             }
             $state = $decoded['state'];
