@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.3
+
+- Preserve binary UTF-8 search overlap across cursor requests.
+- Retry a header fragment at the next window instead of losing a record at the byte-budget boundary.
+
 ## 2.0.2
 
 - Keep detail-header parsing within the captured entry boundary when an incomplete header receives an append.

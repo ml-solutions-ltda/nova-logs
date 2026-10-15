@@ -191,10 +191,17 @@ class BoundedLogReader
         $state = ['offset' => 0, 'active' => null, 'line_start' => true, 'overlap' => ''];
         if ($cursor) {
             $decoded = $this->decode($cursor);
-            if (($decoded['file'] ?? null) !== $file || ($decoded['filters'] ?? null) !== $filters || !isset($decoded['state']['offset'], $decoded['state']['line_start'], $decoded['state']['overlap']) || !array_key_exists('active', $decoded['state'])) {
+            if (($decoded['file'] ?? null) !== $file || ($decoded['filters'] ?? null) !== $filters || ! isset($decoded['state']['offset'], $decoded['state']['line_start'], $decoded['state']['overlap']) || ! array_key_exists('active', $decoded['state'])) {
                 throw new RuntimeException('Cursor pertence a outro arquivo ou filtro.');
             }
             $state = $decoded['state'];
+            if (! empty($state['overlap_base64'])) {
+                $overlap = base64_decode($state['overlap'], true);
+                if ($overlap === false || strlen($overlap) > 2048) {
+                    throw new RuntimeException('Cursor inválido. Atualize a consulta.');
+                }
+                $state['overlap'] = $overlap;
+            }
         }
         if (! $file) {
             return ['data' => [], 'next_cursor' => null, 'partial' => false, 'bytes_read' => 0, 'scanned_to' => 0];
@@ -218,6 +225,13 @@ class BoundedLogReader
                     throw new RuntimeException('Leitura interrompida; o arquivo pode ter sido truncado.');
                 }
                 $read += strlen($line);
+                // A budget boundary must not turn the next header into a continuation.
+                // Retry this partial first line with a fresh budget, while oversized lines
+                // still advance when they occupy a whole request window.
+                if ($state['line_start'] && $length < min(8192, $budget) && ! str_ends_with($line, "\n") && $offset + strlen($line) < $file['size']) {
+                    fseek($handle, $offset);
+                    break;
+                }
                 $metadata = $state['line_start'] ? ($this->parser)($line) : null;
                 if ($metadata && $state['active']) {
                     $entry = $this->entry($file, $state['active'], $offset, true);
@@ -258,8 +272,11 @@ class BoundedLogReader
             $check = $this->open($file);
             fclose($check);
             $more = $state['offset'] < $file['size'];
+            $tokenState = $state;
+            $tokenState['overlap'] = base64_encode($state['overlap']);
+            $tokenState['overlap_base64'] = true;
 
-            return ['data' => $rows, 'next_cursor' => $more ? $this->encode(['file' => $file, 'filters' => $filters, 'state' => $state]) : null, 'partial' => $more, 'bytes_read' => $read, 'scanned_to' => $state['offset'], 'file' => $file['name'], 'ceiling' => $file['size']];
+            return ['data' => $rows, 'next_cursor' => $more ? $this->encode(['file' => $file, 'filters' => $filters, 'state' => $tokenState]) : null, 'partial' => $more, 'bytes_read' => $read, 'scanned_to' => $state['offset'], 'file' => $file['name'], 'ceiling' => $file['size']];
         } finally {
             fclose($handle);
         }
