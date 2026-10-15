@@ -181,6 +181,10 @@ class BoundedLogReader
             fclose($handle);
             throw new RuntimeException('Arquivo rotacionado, truncado ou alterado. Atualize a consulta.');
         }
+        if (! rewind($handle)) {
+            fclose($handle);
+            throw new RuntimeException('Não foi possível posicionar a leitura do arquivo.');
+        }
 
         return $handle;
     }

@@ -56,6 +56,19 @@ class BoundedLogReaderTest extends TestCase
         $this->assertStringContainsString('First', $this->reader->part($all[0]['reference'], $all[0]['locator'])['text']);
     }
 
+    public function test_verified_handle_starts_at_the_beginning_for_original_downloads(): void
+    {
+        $contents = "[2026-10-14 12:00:00] production.ERROR: Original\n".str_repeat("trace bytes\n", 12000);
+        file_put_contents($this->root.'/laravel-download.log', $contents);
+        $handle = $this->reader->open($this->reader->snapshot());
+        try {
+            $this->assertSame(0, ftell($handle));
+            $this->assertSame($contents, stream_get_contents($handle));
+        } finally {
+            fclose($handle);
+        }
+    }
+
     public function test_allowlist_and_rotation_and_invalid_tokens(): void
     {
         $path = $this->root.'/laravel-a.log';
