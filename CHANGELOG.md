@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.4
+
+- Rewind verified handles after fingerprint checks so original downloads stream from byte zero.
+- Cover original stream contents in the reader regression suite; the application also verifies the captured byte ceiling after append.
+
 ## 2.0.3
 
 - Preserve binary UTF-8 search overlap across cursor requests.
