@@ -17,8 +17,11 @@ class NativeLogController extends Controller
 
     public function entries(Request $request)
     {
-        $data = $request->validate(['file_id' => 'nullable|string|size:64|regex:/^[a-f0-9]+$/', 'cursor' => 'nullable|string|max:65536', 'snapshot' => 'nullable|string|max:65536', 'level' => 'nullable|in:ERROR,CRITICAL,ALERT,EMERGENCY,WARNING,INFO,DEBUG,NOTICE', 'search' => 'nullable|string|max:256']);
+        $data = $request->validate(['file_id' => 'nullable|string|size:64|regex:/^[a-f0-9]+$/', 'cursor' => 'nullable|string|max:65536', 'snapshot' => 'nullable|string|max:65536', 'level' => 'nullable|in:ERROR,CRITICAL,ALERT,EMERGENCY,WARNING,INFO,DEBUG,NOTICE', 'search' => 'nullable|string|max:256', 'failures' => 'nullable|boolean']);
         $filters = array_intersect_key($data, array_flip(['level', 'search']));
+        if (! empty($data['failures'])) {
+            $filters['failures'] = true;
+        }
         try {
             $file = ! empty($data['snapshot']) ? $this->reader->decode($data['snapshot']) : $this->reader->snapshot($data['file_id'] ?? null);
             if ($file && !isset($file['id'], $file['size'], $file['dev'], $file['ino'], $file['head'], $file['tail'])) { throw new \RuntimeException('Snapshot inválido. Atualize a consulta.'); }

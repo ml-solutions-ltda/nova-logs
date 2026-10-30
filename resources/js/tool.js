@@ -1,2 +1,8 @@
 import FileExplorer from './pages/FileExplorer.vue';
-Nova.booting(app => { for (const page of ['NovaLogs','LogsTool','ShowLogs']) Nova.inertia(page, FileExplorer); });
+import Dashboard from './pages/Dashboard.vue';
+
+Nova.booting(() => {
+    Nova.inertia('NovaLogs', Dashboard);
+    Nova.inertia('LogsTool', FileExplorer);
+    Nova.inertia('ShowLogs', FileExplorer);
+});
