@@ -1,4 +1,4 @@
-# Nova Logs 2.0 — bounded direct Laravel logs
+# Nova Logs 2.x — bounded direct Laravel logs
 
 `mlsolutions/nova-logs` supplies the Laravel Nova 4/5 log explorer and `Support\BoundedLogReader`. Logs remain in files; no entry database, ingestion worker or full-acervo parsing is required.
 
@@ -23,7 +23,19 @@ Pagination uses the submitted filters and captured snapshot. Editing search text
 
 Fields and actions have consistent sizing and wrap on small screens. Long messages are limited to three preview lines, with the full bounded record available in **Detalhes**; they cannot push actions out of the table. Only the table scrolls horizontally on narrow screens. Labels, keyboard focus, loading/error feedback and light/dark colors are included. No global historical totals or unbounded background search were added.
 
-This source correction and its rebuilt assets are not a published package version. Applications locked to 2.0.4 must adopt a released revision through their normal dependency/release process before these changes reach their users.
+These interface changes were released in 2.1.0. Applications locked to 2.0.4 must adopt the new version through their normal dependency/release process before these changes reach their users. Version 2.1.1 also refreshes the asset URLs when their contents change.
+
+## Asset cache invalidation
+
+From 2.1.1, the script and stylesheet registrations each include a fingerprint of
+their own content. A release with changed bytes gets a new Nova asset URL even
+when file size and modification time are unchanged; unchanged contents keep the
+same URL. This supports long cache lifetimes without retaining an older interface
+after a page reload. The existing authentication and asset middleware still apply.
+
+Missing asset files are not registered, so an incomplete package does not throw
+while booting unrelated Nova tools. The log interface still requires both shipped
+assets; verify their presence and the installed revision during release checks.
 
 ## Error dashboard and progressive batches
 
