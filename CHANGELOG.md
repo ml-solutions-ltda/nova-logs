@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.1.0 — 2026-11-02
 
 - Add progressive cursor batches with accumulated dashboard counters, byte progress, pause/resume and bounded automatic rounds.
 - Bound retained message/occurrence samples independently of file size and label sampled recurrence data explicitly.
