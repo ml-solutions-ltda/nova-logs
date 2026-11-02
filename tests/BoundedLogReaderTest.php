@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 require_once __DIR__.'/../src/Support/BoundedLogReader.php';
 require_once __DIR__.'/../src/Support/LaravelHeader.php';
+require_once __DIR__.'/../src/Http/Controllers/NativeLogController.php';
 class BoundedLogReaderTest extends TestCase
 {
     private string $root;
@@ -179,5 +180,75 @@ class BoundedLogReaderTest extends TestCase
         } while ($cursor && $pages < 10);
         $this->assertCount(1,$all);
         $this->assertSame("First\n",$all[0]['message']);
+    }
+
+    public function test_dashboard_http_filter_returns_only_failures_and_preserves_list_contract(): void
+    {
+        $levels = ['INFO', 'WARNING', 'ERROR', 'CRITICAL', 'DEBUG', 'ALERT', 'EMERGENCY'];
+        $text = '';
+        foreach ($levels as $index => $level) {
+            $text .= "[2026-10-29 12:00:0{$index}] production.{$level}: Fixture {$level}\n";
+        }
+        file_put_contents($this->root.'/laravel-a.log', $text);
+        $validator = new \Illuminate\Validation\Factory(new \Illuminate\Translation\Translator(new \Illuminate\Translation\ArrayLoader, 'en'));
+        \Illuminate\Http\Request::macro('validate', function (array $rules) use ($validator) {
+            return $validator->make($this->all(), $rules)->validate();
+        });
+        $responseFactory = $this->createMock(\Illuminate\Contracts\Routing\ResponseFactory::class);
+        $responseFactory->method('json')->willReturnCallback(fn ($data) => new \Illuminate\Http\JsonResponse($data));
+        Container::getInstance()->instance(\Illuminate\Contracts\Routing\ResponseFactory::class, $responseFactory);
+        $controller = new \MlSolutions\NovaLogViewer\Http\Controllers\NativeLogController($this->reader);
+        try {
+            $response = $controller->entries(\Illuminate\Http\Request::create('/entries', 'GET', ['failures' => '1']));
+            $page = $response->getData(true);
+            $this->assertSame(['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY'], array_column($page['data'], 'level'));
+            $this->assertTrue($response->headers->hasCacheControlDirective('private'));
+            $this->assertTrue($response->headers->hasCacheControlDirective('no-store'));
+            $filtered = $controller->entries(\Illuminate\Http\Request::create('/entries', 'GET', ['failures' => '1', 'level' => 'CRITICAL', 'search' => 'fixture']));
+            $this->assertSame(['CRITICAL'], array_column($filtered->getData(true)['data'], 'level'));
+            foreach ([[], ['failures' => '0']] as $query) {
+                $list = $controller->entries(\Illuminate\Http\Request::create('/entries', 'GET', $query));
+                $this->assertSame($levels, array_column($list->getData(true)['data'], 'level'));
+            }
+            $this->expectException(\Illuminate\Validation\ValidationException::class);
+            $controller->entries(\Illuminate\Http\Request::create('/entries', 'GET', ['failures' => 'all']));
+        } finally {
+            \Illuminate\Http\Request::flushMacros();
+        }
+    }
+
+    public function test_failure_scope_is_bound_to_the_cursor(): void
+    {
+        file_put_contents($this->root.'/laravel-a.log', "[2026-10-29 12:00:00] production.ERROR: First\n[2026-10-29 12:00:01] production.INFO: Routine\n[2026-10-29 12:00:02] production.CRITICAL: Second\n");
+        $file = $this->reader->snapshot();
+        $page = $this->reader->page($file, ['failures' => true], null, 1);
+        $this->assertNotNull($page['next_cursor']);
+        $continued = $this->reader->page($file, ['failures' => true], $page['next_cursor'], 1);
+        $this->assertSame(['CRITICAL'], array_column($continued['data'], 'level'));
+        $this->expectException(\RuntimeException::class);
+        $this->reader->page($file, [], $page['next_cursor'], 1);
+    }
+
+    public function test_sparse_file_larger_than_php_memory_is_read_in_bounded_batches(): void
+    {
+        $path = $this->root.'/laravel-large.log';
+        $handle = fopen($path, 'wb');
+        fwrite($handle, "[2026-10-30 12:00:00] production.ERROR: Large record\n");
+        ftruncate($handle, 512 * 1024 * 1024);
+        fclose($handle);
+        $file = $this->reader->snapshot();
+        $this->assertSame(512 * 1024 * 1024, $file['size']);
+        $cursor = null;
+        $offset = 0;
+        for ($batch = 0; $batch < 3; $batch++) {
+            $page = $this->reader->page($file, ['failures' => true], $cursor);
+            $this->assertLessThanOrEqual(2048, $page['bytes_read']);
+            $this->assertGreaterThan($offset, $page['scanned_to']);
+            $this->assertSame($file['size'], $page['ceiling']);
+            $this->assertNotNull($page['next_cursor']);
+            $offset = $page['scanned_to'];
+            $cursor = $page['next_cursor'];
+        }
+        $this->assertLessThan(8192, $offset);
     }
 }

@@ -1,3 +1,131 @@
 /* Nova Tool CSS */
 @tailwind components;
 @tailwind utilities;
+
+/* Isolate the explorer from Nova's global table and button defaults. */
+.nova-logs-explorer {
+    --logs-bg: #fff;
+    --logs-muted-bg: #f8fafc;
+    --logs-border: #d1d5db;
+    --logs-text: #1f2937;
+    --logs-muted: #4b5563;
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--logs-border);
+    border-radius: .75rem;
+    background: var(--logs-bg);
+    color: var(--logs-text);
+}
+.dark .nova-logs-explorer {
+    --logs-bg: #111827;
+    --logs-muted-bg: #1f2937;
+    --logs-border: #4b5563;
+    --logs-text: #f3f4f6;
+    --logs-muted: #cbd5e1;
+}
+.nova-logs-explorer .logs-header { margin-bottom: 1.5rem; }
+.nova-logs-explorer h1 { margin: 0 0 .5rem; font-size: 1.5rem; font-weight: 700; line-height: 1.3; }
+.nova-logs-explorer h2 { margin: 0; font-size: 1.125rem; font-weight: 700; }
+.nova-logs-explorer p { margin: 0; line-height: 1.5; }
+.nova-logs-explorer .logs-header p, .nova-logs-explorer .logs-hint { color: var(--logs-muted); }
+.nova-logs-explorer .logs-filters { display: grid; grid-template-columns: minmax(12rem, 1fr) minmax(9rem, .6fr) minmax(14rem, 1.4fr); gap: 1rem; align-items: end; margin-bottom: 1rem; }
+.nova-logs-explorer .logs-field { display: flex; flex-direction: column; gap: .5rem; min-width: 0; font-size: .875rem; font-weight: 600; }
+.nova-logs-explorer .logs-field input, .nova-logs-explorer .logs-field select { box-sizing: border-box; width: 100%; min-width: 0; height: 2.5rem; padding: .5rem .75rem; border: 1px solid var(--logs-border); border-radius: .375rem; background-color: var(--logs-bg); color: var(--logs-text); font: inherit; font-weight: 400; }
+.nova-logs-explorer .logs-field select { padding-right: 2rem; text-overflow: ellipsis; }
+.nova-logs-explorer .logs-field input::placeholder { color: var(--logs-muted); }
+.nova-logs-explorer .logs-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.nova-logs-explorer .logs-filters > .logs-actions { grid-column: 1 / -1; }
+.nova-logs-explorer .logs-button { display: inline-flex; box-sizing: border-box; justify-content: center; align-items: center; min-height: 2.5rem; margin: 0; padding: .5rem .875rem; border: 1px solid var(--logs-border); border-radius: .375rem; background: var(--logs-bg); color: var(--logs-text); font: inherit; font-size: .875rem; font-weight: 600; line-height: 1.25; text-decoration: none; white-space: nowrap; cursor: pointer; }
+.nova-logs-explorer .logs-button:hover:not(:disabled) { background: var(--logs-muted-bg); }
+.nova-logs-explorer .logs-button-primary { border-color: #0369a1; background: #0369a1; color: #fff; }
+.nova-logs-explorer .logs-button-primary:hover:not(:disabled) { background: #075985; }
+.nova-logs-explorer button:disabled, .nova-logs-explorer input:disabled, .nova-logs-explorer select:disabled { opacity: .5; cursor: not-allowed; }
+.nova-logs-explorer :is(button, a, input, select, [tabindex]):focus-visible { outline: 2px solid #0284c7; outline-offset: 3px; }
+.nova-logs-explorer .logs-results { display: grid; gap: .25rem; margin: 1rem 0; font-size: .875rem; }
+.nova-logs-explorer .logs-hint { font-size: .8125rem; }
+.nova-logs-explorer .logs-notice, .nova-logs-explorer .logs-error { margin: 1rem 0; padding: .75rem 1rem; border-radius: .375rem; background: var(--logs-muted-bg); overflow-wrap: anywhere; }
+.nova-logs-explorer .logs-error { border-left: 3px solid #dc2626; }
+.nova-logs-explorer .logs-table-scroll { position: relative; max-width: 100%; overflow-x: auto; border: 1px solid var(--logs-border); border-radius: .5rem; }
+.nova-logs-explorer .logs-table { width: 100%; min-width: 42rem; table-layout: fixed; border-collapse: collapse; font-size: .875rem; }
+.nova-logs-explorer .logs-date-column { width: 11.5rem; }
+.nova-logs-explorer .logs-level-column { width: 8rem; }
+.nova-logs-explorer .logs-action-column { width: 7rem; }
+.nova-logs-explorer .logs-table th { padding: .875rem 1rem; background: var(--logs-muted-bg); color: var(--logs-muted); text-align: left; font-size: .75rem; text-transform: uppercase; }
+.nova-logs-explorer .logs-table td { padding: .875rem 1rem; border-top: 1px solid var(--logs-border); vertical-align: top; text-align: left; }
+.nova-logs-explorer .logs-date { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.nova-logs-explorer .logs-message { white-space: pre-wrap; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.nova-logs-explorer .logs-level { display: inline-block; padding: .25rem .5rem; border-radius: .25rem; background: var(--logs-muted-bg); font-size: .75rem; font-weight: 700; }
+.nova-logs-explorer .logs-level:is([data-level="ERROR"], [data-level="CRITICAL"], [data-level="ALERT"], [data-level="EMERGENCY"]) { background: #fee2e2; color: #991b1b; }
+.nova-logs-explorer .logs-level[data-level="WARNING"] { background: #fef3c7; color: #92400e; }
+.nova-logs-explorer .logs-level[data-level="INFO"] { background: #e0f2fe; color: #075985; }
+.nova-logs-explorer .logs-table .logs-empty { padding: 2rem 1rem; text-align: center; color: var(--logs-muted); }
+.nova-logs-explorer .logs-pagination, .nova-logs-explorer .logs-detail-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.nova-logs-explorer .logs-pagination { font-size: .875rem; }
+.nova-logs-explorer .logs-detail { min-width: 0; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--logs-border); }
+.nova-logs-explorer .logs-detail-header { margin: 0 0 .75rem; }
+.nova-logs-explorer .logs-detail pre { max-width: 100%; max-height: 32rem; overflow: auto; padding: 1rem; margin: 1rem 0; border-radius: .375rem; background: var(--logs-muted-bg); color: var(--logs-text); white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8125rem; }
+.nova-logs-explorer .logs-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 900px) {
+    .nova-logs-explorer .logs-filters { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .nova-logs-explorer .logs-search { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+    .nova-logs-explorer { padding: 1rem; }
+    .nova-logs-explorer .logs-filters { grid-template-columns: minmax(0, 1fr); }
+    .nova-logs-explorer .logs-actions > .logs-button { flex: 1 1 auto; }
+}
+
+/* Error dashboard: summaries and investigation panels, separate from the list. */
+.nova-logs-explorer .logs-dashboard-header { display: flex; justify-content: space-between; align-items: start; gap: 1rem; flex-wrap: wrap; }
+.nova-logs-explorer .logs-dashboard-scope { display: grid; gap: .25rem; padding: .875rem 1rem; margin: 1rem 0; border: 1px solid var(--logs-border); border-radius: .5rem; background: var(--logs-muted-bg); font-size: .875rem; }
+.nova-logs-explorer .logs-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+.nova-logs-explorer .logs-metric { min-width: 0; display: flex; flex-direction: column; gap: .5rem; padding: 1.25rem; border: 1px solid var(--logs-border); border-radius: .5rem; }
+.nova-logs-explorer .logs-metric > span { color: var(--logs-muted); font-size: .8125rem; font-weight: 600; }
+.nova-logs-explorer .logs-metric > strong { font-size: 2rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.nova-logs-explorer .logs-metric > small { color: var(--logs-muted); font-size: .75rem; }
+.nova-logs-explorer .logs-metric-critical { border-top: 3px solid #dc2626; }
+.nova-logs-explorer .logs-metric > .logs-metric-time { font-size: 1.5rem; }
+.nova-logs-explorer .logs-dashboard-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 1rem; }
+.nova-logs-explorer .logs-dashboard-panel { min-width: 0; padding: 1.25rem; border: 1px solid var(--logs-border); border-radius: .5rem; }
+.nova-logs-explorer .logs-dashboard-panel h2 { margin-bottom: .375rem; }
+.nova-logs-explorer .logs-severity-chart { display: grid; gap: 1rem; margin-top: 1.25rem; }
+.nova-logs-explorer .logs-severity-row { display: grid; gap: .5rem; width: 100%; padding: .25rem; margin: 0; border: 0; background: transparent; color: var(--logs-text); text-align: left; }
+.nova-logs-explorer .logs-severity-row[aria-pressed="true"] { outline: 1px solid var(--logs-border); outline-offset: .25rem; border-radius: .25rem; }
+.nova-logs-explorer .logs-severity-label { display: flex; justify-content: space-between; align-items: center; gap: .75rem; font-size: .875rem; }
+.nova-logs-explorer .logs-severity-label small { color: var(--logs-muted); font-weight: 400; }
+.nova-logs-explorer .logs-severity-track { display: block; height: .5rem; border-radius: 1rem; background: var(--logs-muted-bg); overflow: hidden; }
+.nova-logs-explorer .logs-severity-track > span { display: block; height: 100%; background: #dc2626; border-radius: inherit; }
+.nova-logs-explorer .logs-severity-track [data-level="CRITICAL"] { background: #be123c; }
+.nova-logs-explorer .logs-severity-track [data-level="ALERT"] { background: #9f1239; }
+.nova-logs-explorer .logs-severity-track [data-level="EMERGENCY"] { background: #881337; }
+.nova-logs-explorer .logs-recurring-list { list-style: none; padding: 0; margin: 1rem 0 0; }
+.nova-logs-explorer .logs-recurring-list li + li { border-top: 1px solid var(--logs-border); }
+.nova-logs-explorer .logs-recurring-item { display: flex; align-items: start; width: 100%; gap: .75rem; padding: .875rem 0; margin: 0; border: 0; text-align: left; background: transparent; color: var(--logs-text); font-size: .875rem; }
+.nova-logs-explorer .logs-recurring-count { flex: 0 0 auto; padding: .25rem .5rem; border-radius: .25rem; background: var(--logs-muted-bg); font-weight: 700; }
+.nova-logs-explorer .logs-recurring-item .logs-message { min-width: 0; flex: 1; }
+.nova-logs-explorer .logs-recurring-open { color: var(--logs-muted); }
+.nova-logs-explorer .logs-occurrences { margin-top: 1rem; }
+.nova-logs-explorer .logs-occurrence { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; }
+.nova-logs-explorer .logs-occurrence + .logs-occurrence { border-top: 1px solid var(--logs-border); }
+.nova-logs-explorer .logs-occurrence-content { min-width: 0; flex: 1; }
+.nova-logs-explorer .logs-occurrence-meta { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.nova-logs-explorer .logs-occurrence-meta time { color: var(--logs-muted); font-size: .8125rem; }
+.nova-logs-explorer .logs-occurrence .logs-message { font-size: .875rem; }
+.nova-logs-explorer .logs-panel-empty { color: var(--logs-muted); padding: 1.5rem 0; font-size: .875rem; }
+@media (max-width: 1000px) {
+    .nova-logs-explorer .logs-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+    .nova-logs-explorer .logs-dashboard-panels { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+    .nova-logs-explorer .logs-metrics { gap: .75rem; }
+    .nova-logs-explorer .logs-metric { padding: .875rem; }
+    .nova-logs-explorer .logs-metric > .logs-metric-time { font-size: 1.125rem; }
+    .nova-logs-explorer .logs-dashboard-panel { padding: 1rem; }
+    .nova-logs-explorer .logs-occurrence { align-items: start; flex-direction: column; }
+}
+.nova-logs-explorer .logs-dashboard-scope progress { width: 100%; height: .75rem; margin: .5rem 0; accent-color: #0369a1; }
+.nova-logs-explorer .logs-dashboard-scope .logs-actions { margin-top: .5rem; }
