@@ -18,8 +18,16 @@ class Tool extends BaseTool
      */
     public function boot()
     {
-        Nova::script('nova-logs', __DIR__ . '/../dist/js/tool.js');
-        Nova::style('nova-logs', __DIR__ . '/../dist/css/tool.css');
+        $script = __DIR__.'/../dist/js/tool.js';
+        $style = __DIR__.'/../dist/css/tool.css';
+
+        if (is_file($script)) {
+            Nova::script('nova-logs-'.substr(hash_file('sha256', $script), 0, 12), $script);
+        }
+
+        if (is_file($style)) {
+            Nova::style('nova-logs-'.substr(hash_file('sha256', $style), 0, 12), $style);
+        }
     }
 
     /**

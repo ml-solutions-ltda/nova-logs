@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.1 — 2026-11-02
+
+- Fingerprint the Nova script and stylesheet URLs by their content so long-lived client caches cannot keep the previous log interface after an update.
+- Keep unchanged assets cacheable and avoid failing unrelated Nova tools when a package asset is missing.
+- Cover changed content with equal file size/mtime, stable unchanged URLs and missing files in isolated registry tests.
+
 ## 2.1.0 — 2026-11-02
 
 - Add progressive cursor batches with accumulated dashboard counters, byte progress, pause/resume and bounded automatic rounds.
